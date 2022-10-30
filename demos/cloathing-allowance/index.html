@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000" />
+    <title>Algolia - Cloathing Allowance Demo</title>
+    <link rel="shortcut icon" href="./favicon.png" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/satellite-min.css" />
+    <link rel="stylesheet" href="src/app.css" />
+  </head>
+
+  <body>
+    <header class="header">
+      <h1 class="header-title"><a href="/">Cloathing Allowance</a></h1>
+      <p class="header-subtitle">using <a href="https://github.com/algolia/instantsearch.js" target="_blank">InstantSearch.js</a></p>
+    </header>
+
+    <main class="content">
+      <div class="search-loader">Generating keys...</div>
+      <div class="search-panel is-hidden">
+        <div class="search-panel__filters">
+          <!-- User group select -->
+          <div class="ais-Panel">
+            <div class="ais-Panel-header">
+              <span>User Group</span>
+            </div>
+            <div class="ais-Panel-body">
+              <select id="user-group-select" class="ais-SortBy-select">
+                <option value="invited">Invited User</option>
+                <option value="employee-no-cloathing">Employee without Cloathing</option>
+                <option value="employee-female-cloathing">Female Employee with Cloathing</option>
+                <option value="employee-male-cloathing">Male Employee with Cloathing</option>
+              </select>
+            </div>
+          </div>
+          <!-- Facets -->
+          <div id="cloathing-toggle"></div>
+          <div id="gender-list"></div>
+          <div id="category-list"></div>
+          <div id="style-list"></div>
+          <div id="brand-list"></div>
+        </div>
+        <div class="search-panel__results">
+          <div id="searchbox"></div>
+          <div id="hits"></div>
+          <div id="pagination"></div>
+        </div>
+      </div>
+    </main>
+
+    <script src="src/app.js" type="module"></script>
+  </body>
+</html>

@@ -1,0 +1,210 @@
+{
+  "root": true,
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "globals": {
+    "module": true,
+    "process": true,
+    "Promise": true,
+    "React": "writable"
+  },
+  "plugins": [
+    "import",
+    "jsx-a11y",
+    "prettier",
+    "react",
+    "react-hooks",
+    "simple-import-sort",
+    "sort-destructure-keys",
+    "unused-imports"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@next/next/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:jsx-a11y/recommended",
+    "plugin:react/all",
+    "plugin:react-hooks/recommended",
+    "prettier"
+  ],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "moduleDirectory": ["node_modules", "src"]
+      }
+    },
+    "react": {
+      "version": "detect"
+    }
+  },
+  "rules": {
+    "arrow-body-style": [2, "as-needed"],
+    "arrow-parens": [2, "as-needed"],
+    "camelcase": [2, { "properties": "always" }],
+    "max-lines": 2,
+    "no-console": 1,
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["../*"],
+            "message": "Relative parent imports are not allowed, use absolute paths starting with ~ instead."
+          }
+        ]
+      }
+    ],
+    "no-shadow": 0,
+    "no-unused-vars": 0,
+    "no-use-before-define": 0,
+    "no-var": 2,
+    "object-shorthand": [2, "always"],
+    "prefer-arrow-callback": 2,
+    "prefer-const": 2,
+    "quotes": [2, "single", { "avoidEscape": true }],
+    "sort-vars": [2, { "ignoreCase": false }],
+    "import/extensions": [2, "ignorePackages", { "ts": "never", "tsx": "never" }],
+    "import/namespace": [2, { "allowComputed": true }],
+    "import/no-anonymous-default-export": [2, { "allowObject": true }],
+    "import/no-unresolved": 2,
+    "jsx-a11y/no-autofocus": 0,
+    "jsx-a11y/no-onchange": 0,
+    "prettier/prettier": [
+      2,
+      {
+        "arrowParens": "avoid",
+        "bracketSpacing": true,
+        "printWidth": 120,
+        "semi": false,
+        "singleQuote": true,
+        "trailingComma": "es5"
+      }
+    ],
+    "react/display-name": 0,
+    "react/forbid-component-props": 0,
+    "react/forbid-prop-types": 0,
+    "react/function-component-definition": [
+      2,
+      {
+        "namedComponents": "arrow-function",
+        "unnamedComponents": "arrow-function"
+      }
+    ],
+    "react/jsx-curly-brace-presence": [2, { "props": "never", "children": "ignore" }],
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".tsx"]
+      }
+    ],
+    "react/jsx-handler-names": 0,
+    "react/jsx-max-depth": [
+      2,
+      {
+        "max": 5
+      }
+    ],
+    "react/jsx-no-bind": 2,
+    "react/jsx-props-no-spreading": 0,
+    "react/jsx-sort-props": [
+      2,
+      {
+        "callbacksLast": false,
+        "shorthandFirst": false,
+        "shorthandLast": false,
+        "ignoreCase": true,
+        "noSortAlphabetically": false,
+        "reservedFirst": false
+      }
+    ],
+    "react/no-multi-comp": 0,
+    "react/no-set-state": 0,
+    "react/prop-types": 0,
+    "react/require-default-props": 0,
+    "react/require-optimization": 0,
+    "react/sort-prop-types": [
+      2,
+      {
+        "callbacksLast": false,
+        "ignoreCase": true,
+        "requiredFirst": false
+      }
+    ],
+    "react-hooks/exhaustive-deps": 0,
+    "react-hooks/rules-of-hooks": 2,
+    "simple-import-sort/imports": [
+      2,
+      {
+        "groups": [
+          ["^react(/\\w)?", "^react-dom(/\\w)?", "^next(/\\w)?", "^@?\\w"],
+          ["^@/\\w"],
+          ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"],
+          ["^.+\\.?(s?css)$"]
+        ]
+      }
+    ],
+    "sort-destructure-keys/sort-destructure-keys": [
+      2,
+      {
+        "caseSensitive": false
+      }
+    ],
+    "unused-imports/no-unused-imports": 2
+  },
+  "overrides": [
+    {
+      "files": ["*.{ts,tsx}"],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "project": "tsconfig.json",
+        "warnOnUnsupportedTypeScriptVersion": true
+      },
+      "plugins": ["@typescript-eslint"],
+      "extends": [
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:import/typescript"
+      ],
+      "settings": {
+        "import/parsers": {
+          "@typescript-eslint/parser": ["*.{ts,tsx}"]
+        },
+        "import/resolver": {
+          "typescript": {
+            "alwaysTryTypes": true,
+            "project": "./tsconfig.json"
+          }
+        }
+      },
+      "rules": {
+        "@typescript-eslint/ban-types": [
+          2,
+          {
+            "types": {
+              "{}": false
+            },
+            "extendDefaults": true
+          }
+        ],
+        "@typescript-eslint/explicit-function-return-type": [
+          2,
+          {
+            "allowExpressions": true
+          }
+        ],
+        "@typescript-eslint/no-shadow": 2,
+        "@typescript-eslint/no-use-before-define": 2
+      }
+    }
+  ]
+}

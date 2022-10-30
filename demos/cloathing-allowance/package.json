@@ -1,0 +1,21 @@
+{
+  "name": "algolia-secured-api-key-rotation",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "parcel index.html --port 3000 --open",
+    "build": "parcel build index.html",
+    "lint": "eslint . && prettier --check .",
+    "lint:fix": "eslint . --fix && prettier --write ."
+  },
+  "devDependencies": {
+    "eslint": "8.15.0",
+    "eslint-config-algolia": "^20.0.0",
+    "parcel": "2.0.1",
+    "prettier": "2.6.2"
+  },
+  "dependencies": {
+    "algoliasearch": "4",
+    "instantsearch.js": "4.48.0"
+  }
+}

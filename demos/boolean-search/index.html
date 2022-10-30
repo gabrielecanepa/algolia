@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Algolia - Boolean Search</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="shortcut icon" href="./favicon.png" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@7/themes/satellite-min.css" />
+    <link rel="stylesheet" href="./src/index.css" />
+  </head>
+
+  <body>
+    <header class="header">
+      <h1 class="header-title">
+        <a href="/">Boolean Search</a>
+      </h1>
+      <p class="header-subtitle">
+        using
+        <a href="https://github.com/algolia/instantsearch.js">
+          Algolia InstantSearch.js
+        </a>
+      </p>
+    </header>
+
+    <div class="container">
+      <div class="search-panel">
+        <div class="search-panel__filters">
+          <div id="gender-list"></div>
+          <div id="category-list"></div>
+          <div id="brand-list"></div>
+          <div id="color-list"></div>
+        </div>
+
+        <div class="search-panel__results">
+          <div id="searchbox"></div>
+          <div id="hits"></div>
+        </div>
+      </div>
+
+      <div id="pagination"></div>
+    </div>
+
+    <script src="./src/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,4 @@
+*.log
+.byebug*
+.DS_Store
+config.yml

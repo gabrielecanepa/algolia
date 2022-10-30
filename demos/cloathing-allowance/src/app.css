@@ -1,0 +1,163 @@
+/* Global */
+
+body,
+h1 {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+/* Utils */
+
+.is-hidden {
+  display: none !important;
+}
+
+.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Layout */
+
+.header {
+  display: flex;
+  align-items: center;
+  min-height: 50px;
+  padding: 0.5rem 1rem;
+  background-image: linear-gradient(284deg, #000, #333);
+  color: #fff;
+  margin-bottom: 1rem;
+}
+.header a {
+  color: #fff;
+  text-decoration: none;
+}
+.header-title {
+  font-size: 1.2rem;
+  font-weight: normal;
+}
+.header-title::after {
+  content: ' ▸ ';
+  padding: 0 0.5rem;
+}
+.header-subtitle {
+  font-size: 1.2rem;
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.search-panel {
+  display: flex;
+}
+.search-panel__filters {
+  flex: 1;
+  padding-right: 4rem;
+}
+.search-panel__results {
+  flex: 3;
+}
+
+.search-loader {
+  font-size: 1.1rem;
+  text-align: center;
+  padding: 3rem 0;
+}
+
+#searchbox {
+  margin-bottom: 2rem;
+}
+
+#pagination {
+  margin: 2rem auto;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+/* Components */
+
+.product-card {
+  position: relative;
+}
+.product-card__img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 0.5rem;
+}
+.product-card__cloathing-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 11px;
+  border-radius: 80px;
+  padding: 0px 8px;
+  color: #9e7a03;
+  background: #ffebb6;
+  border: 1px solid #ffda73;
+  text-transform: uppercase;
+}
+.product-card__body {
+  padding: 0 24px 24px;
+  text-align: center;
+}
+.product-card__title {
+  margin-bottom: 0;
+}
+.product-card__gender {
+  color: #888;
+  margin: 0.6rem 0;
+}
+.product-card__price {
+  color: #333;
+  font-size: 0.95rem;
+  margin: 0.8rem 0 0;
+}
+.product-card__price-badge {
+  display: inline-block;
+  margin-top: 0.8rem;
+  border-radius: 80px;
+  padding: 4px 12px;
+  font-size: 0.9rem;
+  color: #003cb3;
+  background: #b6ceff;
+  border: 1px solid #6c9dff;
+}
+
+/* InstantSearch overrides */
+
+.ais-SortBy-select {
+  font-size: 15px;
+}
+
+.ais-Hits-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-gap: 1.5rem;
+}
+
+.ais-Hits-item {
+  display: initial;
+  padding: 0;
+}
+
+.ais-Highlight-highlighted {
+  color: inherit;
+  font-size: inherit;
+}
+
+.ais-RefinementList-label {
+  font-size: 0.875rem;
+}
+
+.ais-RefinementList-checkbox {
+  appearance: auto;
+}

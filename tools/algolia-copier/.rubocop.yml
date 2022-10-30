@@ -1,0 +1,64 @@
+AllCops:
+  Include:
+    - Rakefile
+    - "**/Gemfile"
+    - "**/*.gemspec"
+    - "**/*.rake"
+    - "**/*.rb"
+  TargetRubyVersion: 3.1.0
+
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
+Layout/LineLength:
+  Max: 120
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+
+Lint/RaiseException:
+  Enabled: true
+Lint/StructNewOverride:
+  Enabled: true
+Lint/SuppressedException:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 20
+Metrics/BlockLength:
+  Max: 100
+Metrics/ClassLength:
+  Max: 140
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/DoubleNegation:
+  Enabled: false
+Style/ExplicitBlockArgument:
+  Enabled: false
+Style/ExponentialNotation:
+  Enabled: true
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Style/HashEachMethods:
+  Enabled: true
+Style/HashTransformKeys:
+  Enabled: true
+Style/HashTransformValues:
+  Enabled: true
+Style/HashSyntax:
+  Enabled: false
+Style/Lambda:
+  EnforcedStyle: literal
+Style/ParallelAssignment:
+  Enabled: false
+Style/RaiseArgs:
+  Enabled: false
+Style/SpecialGlobalVars:
+  Enabled: false
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma

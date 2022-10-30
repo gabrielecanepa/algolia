@@ -1,0 +1,27 @@
+{
+  "name": "algolia-dynamic-faceting",
+  "version": "1.0.0",
+  "private": true,
+  "keywords": [
+    "algolia",
+    "instantsearch",
+    "instantsearch.js"
+  ],
+  "type": "module",
+  "dependencies": {
+    "algoliasearch": "4",
+    "instantsearch.js": "4.41.0"
+  },
+  "devDependencies": {
+    "eslint": "8.15.0",
+    "parcel": "2.0.1",
+    "parcel-reporter-static-files-copy": "^1.3.4",
+    "prettier": "2.6.2"
+  },
+  "scripts": {
+    "start": "parcel index.html --port 3000",
+    "build": "parcel build index.html",
+    "lint": "eslint . && prettier --check .",
+    "lint:fix": "eslint . --fix && prettier --write ."
+  }
+}

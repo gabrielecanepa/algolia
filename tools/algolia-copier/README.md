@@ -1,0 +1,3 @@
+# Algolia Copier
+
+-
