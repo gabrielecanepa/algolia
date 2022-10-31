@@ -4,9 +4,8 @@
 
 body {
   color: rgb(65, 65, 65);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+    'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
@@ -20,6 +19,7 @@ body {
 }
 
 /* Autocomplete */
+
 .algolia-autocomplete,
 .aa-input,
 .aa-dropdown-menu {
@@ -45,6 +45,7 @@ body {
 }
 
 /* Query suggestions */
+
 .aa-dataset-querySuggestions {
   text-align: center;
 }
@@ -55,6 +56,7 @@ body {
 }
 
 /* Products */
+
 .aa-dataset-products .aa-suggestions {
   display: grid !important;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -69,6 +71,7 @@ body {
 }
 .product-card__image {
   object-fit: cover;
+  width: 100%;
 }
 .product-card__body {
   padding: 20px 30px;
@@ -79,4 +82,18 @@ body {
   line-height: 24px;
   font-weight: 400;
   font-family: Helvetica, sans-serif;
+}
+
+/* Breakpoints */
+
+@media screen and (max-width: 768px) {
+  .aa-dataset-products .aa-suggestions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .aa-dataset-products .aa-suggestions {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
 }
