@@ -1,5 +1,5 @@
 {
-  "name": "instantsearch.js-query-suggestions",
+  "name": "instantsearch.js-qs",
   "version": "0.0.1",
   "description": "Display query suggestions and products using Algolia InstantSearch.js ⚡️",
   "license": "MIT",
