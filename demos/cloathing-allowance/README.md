@@ -1,6 +1,6 @@
-# Secured API keys
+# Algolia Cloathing Allowance
 
-> This project was generated with [create-instantsearch-app](https://github.com/algolia/create-instantsearch-app) by [Algolia](https://algolia.com).
+> This project was generated with [create-instantsearch-app](https://github.com/algolia/create-instantsearch-app) by [Algolia](https://algolia.com)
 
 ## Get started
 

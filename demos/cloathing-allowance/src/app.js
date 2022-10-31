@@ -67,8 +67,8 @@ const runSearch = userGroup => {
         container: '#cloathing-toggle',
         header: 'Cloathing Allowance',
         label: 'Available products',
-        cloathingGenders,
-      })
+        genders: cloathingGenders,
+      }),
     )
   }
 

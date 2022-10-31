@@ -1,60 +1,61 @@
-const connectCloathingToggle = (renderFn, disposeFn, params) => ({
-  $$type: 'ais.cloathing-toggle',
-  init(initOptions) {
-    const { helper, instantSearchInstance } = initOptions
+const connectCloathingToggle = (renderFn, disposeFn, params) => {
+  const { checkbox, genders, label } = params
 
-    params.checkbox.addEventListener('change', () => {
-      if (!params.checkbox.checked) {
-        helper.setQueryParameter('filters', '').search()
-        return
+  return {
+    $$type: 'ais.cloathing-toggle',
+    init(initOptions) {
+      const { helper } = initOptions
+
+      // Add filter event listener to the checkbox
+      checkbox.addEventListener('change', () => {
+        checkbox.checked
+          ? label.classList.add('text-bold')
+          : label.classList.remove('text-bold')
+
+        const filters = checkbox.checked
+          ? genders.map(gender => `cloathing:${gender}`).join(' OR ')
+          : ''
+        helper.setQueryParameter('filters', filters).search()
+      })
+
+      renderFn(this.getWidgetRenderState(initOptions), true)
+    },
+    render(renderOptions) {
+      renderFn(this.getWidgetRenderState(renderOptions), false)
+    },
+    dispose() {
+      disposeFn()
+    },
+    getWidgetUiState(uiState) {
+      return uiState
+    },
+    getWidgetSearchParameters(searchParameters) {
+      return searchParameters
+    },
+    getRenderState(renderState) {
+      return renderState
+    },
+    getWidgetRenderState({ results }) {
+      // Initial render
+      if (!results) {
+        return { disabled: false }
       }
 
-      const filters = params.cloathingGenders
-        .map(gender => `cloathing:${gender}`)
-        .join(' OR ')
+      const { facets } = results._rawResults[0]
+      // Disable if current user doesn't have cloathing options
+      const disabled = genders.every(gender => !facets[`cloathingPrices.${gender}`])
 
-      helper
-        .setQueryParameter('filters', filters)
-        .search()
-    })
-
-    renderFn(this.getWidgetRenderState(initOptions), true)
-  },
-  render(renderOptions) {
-    renderFn(this.getWidgetRenderState(renderOptions), false)
-  },
-  dispose() {
-    disposeFn()
-  },
-  getWidgetUiState(uiState) {
-    return uiState
-  },
-  getWidgetSearchParameters(searchParameters) {
-    return searchParameters
-  },
-  getRenderState(renderState) {
-    return renderState
-  },
-  getWidgetRenderState({ helper, results }) {
-    // Initial render
-    if (!results) {
-      return { disabled: false }
-    }
-
-    // Check if the current user has cloathing options
-    const currentFacets = results._rawResults[0].facets
-    const disabled = params.cloathingGenders.every(gender => !currentFacets[`cloathingPrices.${gender}`])
-
-    return { disabled }
-  },
-})
+      return { disabled }
+    },
+  }
+}
 
 export default widgetParams => {
   const {
-    cloathingGenders,
     container,
-    header = 'Cloathing Allowance',
-    label = 'Available products',
+    genders,
+    header,
+    label,
   } = widgetParams
 
   const containerNode = typeof container === 'string'
@@ -65,13 +66,17 @@ export default widgetParams => {
   root.classList.add('ais-Panel')
 
   root.innerHTML = `
-    <div class="ais-Panel-header">
-      <span>${header}</span>
-    </div>
+    ${header ? `
+      <div class="ais-Panel-header">
+        <span>${header}</span>
+      </div>
+    ` : ''}
     <div class="ais-Panel-body">
       <label class="ais-RefinementList-label">
         <input type="checkbox" class="ais-RefinementList-checkbox">
-        <span class="ais-RefinementList-labelText">${label}</span>
+        ${label ? `
+          <span class="ais-RefinementList-labelText">${label}</span>
+        ` : ''}
       </label>
     </div>
   `
@@ -96,8 +101,9 @@ export default widgetParams => {
   }
 
   const connectorParams = {
-    cloathingGenders,
     checkbox: checkboxNode,
+    genders,
+    label: labelNode,
   }
 
   return {

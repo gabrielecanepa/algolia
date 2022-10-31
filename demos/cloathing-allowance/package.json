@@ -1,18 +1,18 @@
 {
-  "name": "algolia-secured-api-key-rotation",
+  "name": "algolia-cloathing-allowance",
   "version": "0.0.1",
   "private": true,
+  "main": "src/app.js",
   "scripts": {
     "start": "parcel index.html --port 3000 --open",
     "build": "parcel build index.html",
-    "lint": "eslint . && prettier --check .",
-    "lint:fix": "eslint . --fix && prettier --write ."
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix"
   },
   "devDependencies": {
-    "eslint": "8.15.0",
-    "eslint-config-algolia": "^20.0.0",
-    "parcel": "2.0.1",
-    "prettier": "2.6.2"
+    "eslint": "^8.26.0",
+    "eslint-plugin-import": "^2.26.0",
+    "parcel": "2.0.1"
   },
   "dependencies": {
     "algoliasearch": "4",
