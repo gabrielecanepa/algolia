@@ -52,7 +52,6 @@ const runSearch = userGroup => {
     facet('gender'),
     facet('category'),
     facet('style'),
-    facet('brand'),
     pagination({
       container: '#pagination',
     }),
