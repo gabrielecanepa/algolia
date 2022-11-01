@@ -1,25 +1,25 @@
 export const userGroups = {
   invited: {
-    cloathingGenders: [],
+    genders: [],
     options: {
       filters: 'cloathing:false',
       attributesToRetrieve: ['*', '-cloathingPrices'],
     },
   },
   'employee-no-cloathing': {
-    cloathingGenders: [],
+    genders: [],
     options: {
       attributesToRetrieve: ['*', '-cloathingPrices'],
     },
   },
   'employee-female-cloathing': {
-    cloathingGenders: ['women', 'unisex'],
+    genders: ['women', 'unisex'],
     options: {
       attributesToRetrieve: ['*', '-cloathingPrices.men'],
     },
   },
   'employee-male-cloathing': {
-    cloathingGenders: ['men', 'unisex'],
+    genders: ['men', 'unisex'],
     options: {
       attributesToRetrieve: ['*', '-cloathingPrices.women'],
     },

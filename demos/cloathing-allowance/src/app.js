@@ -5,7 +5,7 @@ import { configure, hits, pagination, searchBox } from 'instantsearch.js/es/widg
 import { generateSecuredApiKey } from './api'
 import { userGroups } from './config'
 import { productCard } from './templates'
-import { cloathingToggle, facet } from './widgets'
+import { cloathingToggle, refinementListPanel } from './widgets'
 
 // Env variables
 const APP_ID = '0UI9MOXMX5'
@@ -16,26 +16,22 @@ const searchLoader = document.querySelector('.search-loader')
 const searchPanel = document.querySelector('.search-panel')
 const userSelect = document.querySelector('#user-group-select')
 
-// Stored values
-const store = {
-  keys: {},
-  search: null,
-}
+// Secured keys and search instance
+const keys = {}
+let search
 
 const runSearch = userGroup => {
-  const searchClient = algoliasearch(APP_ID, store.keys[userGroup])
+  const searchClient = algoliasearch(APP_ID, keys[ userGroup ])
 
-  // Needed to clear the eventual previous instance
-  if (store.search) {
-    store.search.dispose()
-  }
+  // Clear the eventual previous search instance
+  if (search) search.dispose()
 
-  store.search = instantsearch({
+  search = instantsearch({
     indexName: INDEX_NAME,
     searchClient,
   })
 
-  const widgets = [
+  search.addWidgets([
     configure({
       facets: ['*'],
       hitsPerPage: 12,
@@ -49,49 +45,45 @@ const runSearch = userGroup => {
         item: productCard,
       },
     }),
-    facet('gender'),
-    facet('category'),
-    facet('style'),
+    refinementListPanel('gender'),
+    refinementListPanel('category'),
+    refinementListPanel('style'),
     pagination({
       container: '#pagination',
     }),
-  ]
+  ])
 
-  // Get the current cloathing genders - women, men or unisex
-  const { cloathingGenders } = userGroups[userGroup]
+  // App-specific cloathing widget
+  const { genders } = userGroups[userGroup]
 
-  if (cloathingGenders.length > 0) {
-    widgets.push(
+  if (genders.length > 0) {
+    search.addWidgets([
       cloathingToggle({
         container: '#cloathing-toggle',
         header: 'Cloathing Allowance',
         label: 'Available products',
-        genders: cloathingGenders,
+        genders,
       }),
-    )
+    ])
   }
 
-  store.search.addWidgets(widgets)
-  store.search.start()
+  search.start()
 }
 
-// Run app asynchronously
 (async () => {
-  // Fetch and store key for each user group
+  // Fetch secured API keys
   for (const group of Object.keys(userGroups)) {
     const { key } = await generateSecuredApiKey(userGroups[group].options)
-    store.keys[group] = key
+    keys[group] = key
   }
 
-  // Run a new search instance on user group change
+  // App-specific toggle
   userSelect.addEventListener('change', ({ target }) => {
     runSearch([target.value])
   })
 
-  // Run initial search with default user group
+  // Run initial search
   runSearch(userSelect.value)
-
-  // Hide loader and show search panel
   searchLoader.remove()
   searchPanel.classList.remove('is-hidden')
 })()
