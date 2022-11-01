@@ -1,5 +1,5 @@
 const connectCloathingToggle = (renderFn, disposeFn, params) => {
-  const { checkbox, genders, label } = params
+  const { attribute, checkbox, filterAttribute, genders, label } = params
 
   return {
     $$type: 'ais.cloathing-toggle',
@@ -13,7 +13,7 @@ const connectCloathingToggle = (renderFn, disposeFn, params) => {
           : label.classList.remove('text-bold')
 
         const filters = checkbox.checked
-          ? genders.map(gender => `cloathing:${gender}`).join(' OR ')
+          ? genders.map(gender => `${filterAttribute}:${gender}`).join(' OR ')
           : ''
         helper.setQueryParameter('filters', filters).search()
       })
@@ -38,21 +38,27 @@ const connectCloathingToggle = (renderFn, disposeFn, params) => {
     getWidgetRenderState({ results }) {
       // Initial render
       if (!results) {
-        return { disabled: false }
+        return { count: 0 }
       }
 
       const { facets } = results._rawResults[0]
-      // Disable if current user doesn't have cloathing options
-      const disabled = genders.every(gender => !facets[`cloathingPrices.${gender}`])
 
-      return { disabled }
+      const count = genders.reduce((count, gender) => {
+        const facet = facets[`${attribute}.${gender}`]
+        if (!facet) return count
+        return count += Object.values(facet).reduce((sum, value) => sum += value, 0)
+      }, 0)
+
+      return { count }
     },
   }
 }
 
 export default widgetParams => {
   const {
+    attribute,
     container,
+    filterAttribute,
     genders,
     header,
     label,
@@ -76,6 +82,7 @@ export default widgetParams => {
         <input type="checkbox" class="ais-RefinementList-checkbox">
         ${label ? `
           <span class="ais-RefinementList-labelText">${label}</span>
+          <span class="ais-RefinementList-count"></span>
         ` : ''}
       </label>
     </div>
@@ -85,15 +92,20 @@ export default widgetParams => {
 
   const checkboxNode = root.querySelector('.ais-RefinementList-checkbox')
   const labelNode = root.querySelector('.ais-RefinementList-label')
+  const countNode = root.querySelector('.ais-RefinementList-count')
 
   const render = renderOptions => {
-    const { disabled } = renderOptions
+    const { count } = renderOptions
+
+    const disabled = count === 0
 
     checkboxNode.disabled = disabled
 
     disabled
       ? labelNode.classList.add('is-disabled')
       : labelNode.classList.remove('is-disabled')
+
+    countNode.textContent = count
   }
 
   const dispose = () => {
@@ -101,7 +113,9 @@ export default widgetParams => {
   }
 
   const connectorParams = {
+    attribute,
     checkbox: checkboxNode,
+    filterAttribute,
     genders,
     label: labelNode,
   }

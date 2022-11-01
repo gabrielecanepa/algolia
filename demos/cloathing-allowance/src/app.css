@@ -77,6 +77,10 @@ body {
 }
 
 #searchbox {
+  margin-bottom: 1rem;
+}
+
+#stats {
   margin-bottom: 2rem;
 }
 

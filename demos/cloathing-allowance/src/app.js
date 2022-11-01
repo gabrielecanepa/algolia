@@ -1,6 +1,6 @@
 import algoliasearch from 'algoliasearch'
 import instantsearch from 'instantsearch.js'
-import { configure, hits, pagination, searchBox } from 'instantsearch.js/es/widgets'
+import { configure, hits, pagination, searchBox, stats } from 'instantsearch.js/es/widgets'
 
 import { generateSecuredApiKey } from './api'
 import { userGroups } from './config'
@@ -39,9 +39,13 @@ const runSearch = userGroup => {
     searchBox({
       container: '#searchbox',
     }),
+    stats({
+      container: '#stats',
+    }),
     hits({
       container: '#hits',
       templates: {
+        empty: () => null,
         item: productCard,
       },
     }),
@@ -53,7 +57,7 @@ const runSearch = userGroup => {
     }),
   ])
 
-  // App-specific cloathing widget
+  // Cloathing widget
   const { genders } = userGroups[userGroup]
 
   if (genders.length > 0) {
@@ -62,6 +66,8 @@ const runSearch = userGroup => {
         container: '#cloathing-toggle',
         header: 'Cloathing Allowance',
         label: 'Available products',
+        attribute: 'cloathingPrices',
+        filterAttribute: 'cloathing',
         genders,
       }),
     ])
@@ -77,7 +83,7 @@ const runSearch = userGroup => {
     keys[group] = key
   }
 
-  // App-specific toggle
+  // User select
   userSelect.addEventListener('change', ({ target }) => {
     runSearch([target.value])
   })
