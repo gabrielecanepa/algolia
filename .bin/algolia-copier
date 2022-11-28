@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ "$1" = "config" ]]; then
-  $EDITOR -a ./tools/algolia-copier/config.yml
+  $EDITOR ./tools/algolia-copier/config.yml
   exit 0
 fi
 
