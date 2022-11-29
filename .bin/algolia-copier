@@ -1,8 +1,0 @@
-#!/bin/bash
-
-if [[ "$1" = "config" ]]; then
-  $EDITOR ./tools/algolia-copier/config.yml
-  exit 0
-fi
-
-ruby ./tools/algolia-copier/lib/main.rb

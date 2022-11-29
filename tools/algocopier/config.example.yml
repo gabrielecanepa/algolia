@@ -1,15 +1,15 @@
 ################## Settings ##################
 
 source_app: app1
-source_index: index_name
+source_index: app1_index_name
 target_app: app2
-target_index: my_copied_index
+target_index: app2_index_name
 
 clear_index: true
 hits: true
 params:
   query: ""
-  # ...
+  # ...other search params
 settings: true
 replicas: false
 synonyms: true
@@ -21,9 +21,9 @@ file: null
 
 apps:
   app1:
-    appId: 0UI9MOXMX5
-    apiKey: <ADMIN_API_KEY>
-  algolia_dashboard:
-    appId: X20GSLY1CL
-    apiKey: <ADMIN_API_KEY>
+    appId: <APP1_ID>
+    apiKey: <APP1_ADMIN_KEY>
+  app2:
+    appId: <APP2_ID>
+    apiKey: <APP2_ADMIN_KEY>
   # ...
