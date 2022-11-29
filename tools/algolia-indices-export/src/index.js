@@ -40,20 +40,16 @@ const showAlert = (message, type = 'danger') => {
   const alert = document.createElement('div')
   alert.role = 'alert'
   alert.classList.add('alert', `alert-${type}`)
-
-  const container = document.createElement('div')
-  container.classList.add('alert-container')
-  container.textContent = message
-  alert.appendChild(container)
+  alert.textContent = message
 
   const close = document.createElement('button')
   close.type = 'button'
   close.classList.add('alert-close')
   close.innerHTML = '<span aria-hidden="true">&times;</span>'
-  container.appendChild(close)
+  alert.appendChild(close)
 
   close.addEventListener('click', () => alert.remove())
-  setTimeout(() => alert.remove(), 3000)
+  setTimeout(() => alert.remove(), 4000)
   document.body.appendChild(alert)
 }
 

@@ -85,7 +85,7 @@ a:hover {
   color: var(--color-red);
   border-color: var(--color-red);
   background-color: var(--color-pink);
-  padding: 0;
+  padding: 1rem;
   max-width: 600px;
 }
 .alert-container {
@@ -94,8 +94,8 @@ a:hover {
 }
 .alert-close {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 0.25rem;
+  right: 0.5rem;
   background: transparent;
   border: none;
   color: inherit;
