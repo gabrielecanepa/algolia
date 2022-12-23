@@ -5,7 +5,8 @@
   "license": "MIT",
   "main": "index.html",
   "scripts": {
-    "start": "parcel index.html --open",
+    "dev": "parcel index.html --open",
+    "start": "parcel index.html",
     "build": "parcel build index.html"
   },
   "dependencies": {
@@ -25,6 +26,7 @@
     "search",
     "instantsearch",
     "instantsearch.js",
-    "query suggestions"
+    "query suggestions",
+    "suggestions"
   ]
 }

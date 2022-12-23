@@ -1,39 +1,46 @@
 import algoliasearch from 'algoliasearch'
 import instantsearch from 'instantsearch.js'
-import { configure, index, searchBox } from 'instantsearch.js/es/widgets'
+import { configure, index } from 'instantsearch.js/es/widgets'
 
-import { productHits, querySuggestionHits } from './hits'
+import { searchBox, products, querySuggestions } from './widgets'
 
-// Constants (env variables)
-const APP_ID = '0UI9MOXMX5'
-const PUBLIC_API_KEY = '1d30c6a6ea8a7dfcc9797671c39723db'
-const PRODUCTS_INDEX = 'fendi.it.en'
-const QUERY_SUGGESTIONS_INDEX = 'fendi.it.en_qs'
+// Environment
+const APP_ID = process.env.APP_ID
+const SEARCH_API_KEY = process.env.SEARCH_API_KEY
+const PRODUCTS_INDEX = process.env.PRODUCTS_INDEX
+const QUERY_SUGGESTIONS_INDEX = process.env.QUERY_SUGGESTIONS_INDEX
 
 // Initialize client
-const searchClient = algoliasearch(APP_ID, PUBLIC_API_KEY)
+const searchClient = algoliasearch(APP_ID, SEARCH_API_KEY)
 
 // Containers
-const querySuggestionContainer = document.querySelector('#query-suggestions')
+const searchBoxContainer = document.querySelector('#searchbox')
+const querySuggestionsContainer = document.querySelector('#query-suggestions')
 const productsContainer = document.querySelector('#products')
+
+// Search
+let isFirstRender = true
+
+const searchFunction = async helper => {
+  const query = helper.state.query.trim()
+  // If there's no query, empty the containers and don't send the request.
+  if (!query) {
+    if (isFirstRender) {
+      isFirstRender = false
+      return
+    }
+    querySuggestionsContainer.innerHTML = ''
+    productsContainer.innerHTML = ''
+    return
+  }
+  // Add filter to avoid fetching the same exact query. NB: `query` must be a facet.
+  helper.setQueryParameter('filters', `NOT query:'${query}'`).search()
+}
 
 const search = instantsearch({
   indexName: PRODUCTS_INDEX,
   searchClient,
-  searchFunction(helper) {
-    const { query } = helper.state
-
-    // If there's no query, empty the containers and don't send the request
-    if (!query.trim()) {
-      querySuggestionContainer.innerHTML = ''
-      productsContainer.innerHTML = ''
-      return
-    }
-
-    helper
-      .setQueryParameter('filters', `NOT query:'${query.trim()}'`)
-      .search()
-  },
+  searchFunction,
 })
 
 search.addWidgets([
@@ -41,12 +48,10 @@ search.addWidgets([
     hitsPerPage: 6,
   }),
   searchBox({
-    container: '#searchbox',
+    container: searchBoxContainer,
     placeholder: 'Search for',
-    showSubmit: false,
-    showLoadingIndicator: true,
   }),
-  productHits({
+  products({
     container: productsContainer,
   }),
   // Query suggestions index
@@ -54,10 +59,11 @@ search.addWidgets([
     indexName: QUERY_SUGGESTIONS_INDEX,
   }).addWidgets([
     configure({
-      hitsPerPage: 3,
+      hitsPerPage: 4,
     }),
-    querySuggestionHits({
-      container: querySuggestionContainer,
+    querySuggestions({
+      container: querySuggestionsContainer,
+      searchBoxContainer,
     }),
   ]),
 ])
