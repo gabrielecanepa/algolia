@@ -2,7 +2,7 @@ import { connectSearchBox } from 'instantsearch.js/es/connectors'
 
 export const searchBox = connectSearchBox((renderOptions, isFirstRender) => {
   const { refine, widgetParams } = renderOptions
-  const { container, placeholder = 'Search for' } = widgetParams
+  const { container, placeholder = 'Search for', initialQuery  } = widgetParams
 
   if (isFirstRender) {
     container.innerHTML = `
@@ -15,29 +15,39 @@ export const searchBox = connectSearchBox((renderOptions, isFirstRender) => {
           autocorrect="off"
           autocapitalize="off"
           spellcheck="false"
+          value="${initialQuery}"
         />
         <input class="ais-SearchBox-hint" readonly tabindex="-1" />
-      </div>
+      </form>
     `
 
     const input = container.querySelector('.ais-SearchBox-input')
     const hint = container.querySelector('.ais-SearchBox-hint')
 
     input.addEventListener('input', ({ target }) => {
-      if (!target.value || !hint.placeholder.startsWith(target.value)) {
+      if (!hint.placeholder.startsWith(target.value)) {
         hint.placeholder = ''
-        if (!target.value) return
       }
       refine(target.value)
     })
+
     input.addEventListener('keydown', event => {
-      if (event.key !== 'Tab') return
+      if (!['Enter', 'Tab'].includes(event.key)) return
 
       event.preventDefault()
 
-      if (hint.placeholder.length > event.target.value.length) {
-        input.value = hint.placeholder
-        refine(input.value)
+      const query = event.target.value.trim()
+
+      switch (event.key) {
+        case 'Enter':
+          if (!query) return
+          window.location.href = `/search?q=${query}`
+          return
+        case 'Tab':
+          if (hint.placeholder.length > query.length) {
+            input.value = hint.placeholder
+            refine(input.value)
+          }
       }
     })
   }
