@@ -8,9 +8,9 @@ const productCard = hit => {
     <div class="product-card">
       <img class="product-card__image" src="${imageUrl}" alt="${name}">
       <div class="product-card__body">
-        <p>${name}</p>
-        <p>${short_description}</p>
-        ${price ? `<p>${price.EUR}€</p>` : '(Price not available)'}
+        <p class="product-card__title">${name}</p>
+        <p class="product-card__description">${short_description}</p>
+        <p class="product-card__price">${price ? price.EUR : '(Price not available)'}€</p>
       </div>
     </div>
   `
@@ -36,15 +36,11 @@ export const products = connectHits((renderOptions, isFirstRender) => {
   container.innerHTML = `
     <div class="ais-Hits">
       <ul class="ais-Hits-list">
-        ${hits
-          .map(
-            hit => `
+        ${hits.map(hit => `
           <li class="ais-Hits-item">
             ${productCard(hit)}
           </li>
-        `
-          )
-          .join('')}
+        `).join('')}
       </ul>
     </div>
   `
