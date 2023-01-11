@@ -1,60 +1,4 @@
-const connectCloathingToggle = (renderFn, disposeFn, params) => {
-  const { attribute, checkbox, filterAttribute, genders, label } = params
-
-  return {
-    $$type: 'ais.cloathing-toggle',
-    init(initOptions) {
-      const { helper } = initOptions
-
-      // Add filter event listener to the checkbox
-      checkbox.addEventListener('change', () => {
-        checkbox.checked
-          ? label.classList.add('text-bold')
-          : label.classList.remove('text-bold')
-
-        const filters = checkbox.checked
-          ? genders.map(gender => `${filterAttribute}:${gender}`).join(' OR ')
-          : ''
-        helper.setQueryParameter('filters', filters).search()
-      })
-
-      renderFn(this.getWidgetRenderState(initOptions), true)
-    },
-    render(renderOptions) {
-      renderFn(this.getWidgetRenderState(renderOptions), false)
-    },
-    dispose() {
-      disposeFn()
-    },
-    getWidgetUiState(uiState) {
-      return uiState
-    },
-    getWidgetSearchParameters(searchParameters) {
-      return searchParameters
-    },
-    getRenderState(renderState) {
-      return renderState
-    },
-    getWidgetRenderState({ results }) {
-      // Initial render
-      if (!results) {
-        return { count: 0 }
-      }
-
-      const { facets } = results._rawResults[0]
-
-      const count = genders.reduce((count, gender) => {
-        const facet = facets[`${attribute}.${gender}`]
-        if (!facet) return count
-        return count += Object.values(facet).reduce((sum, value) => sum += value, 0)
-      }, 0)
-
-      return { count }
-    },
-  }
-}
-
-export default widgetParams => {
+const cloathingToggle = widgetParams => {
   const {
     attribute,
     container,
@@ -112,16 +56,52 @@ export default widgetParams => {
     containerNode.removeChild(root)
   }
 
-  const connectorParams = {
-    attribute,
-    checkbox: checkboxNode,
-    filterAttribute,
-    genders,
-    label: labelNode,
-  }
-
   return {
-    ...connectCloathingToggle(render, dispose, connectorParams),
-    $$widgetType: 'ais.cloathing-toggle',
+    $$type: 'ais.cloathing-toggle',
+    init(initOptions) {
+      const { helper } = initOptions
+
+      // Add filter event listener to the checkbox
+      checkboxNode.addEventListener('change', () => {
+        checkboxNode.checked
+          ? labelNode.classList.add('text-bold')
+          : labelNode.classList.remove('text-bold')
+
+        const filters = checkboxNode.checked
+          ? genders.map(gender => `${filterAttribute}:${gender}`).join(' OR ')
+          : ''
+        helper.setQueryParameter('filters', filters).search()
+      })
+
+      render(this.getWidgetRenderState(initOptions), true)
+    },
+    render(renderOptions) {
+      render(this.getWidgetRenderState(renderOptions), false)
+    },
+    dispose,
+    getWidgetUiState(uiState) {
+      return uiState
+    },
+    getWidgetSearchParameters(searchParameters) {
+      return searchParameters
+    },
+    getRenderState(renderState) {
+      return renderState
+    },
+    getWidgetRenderState({ results }) {
+      if (!results) return { count: 0 }
+
+      const { facets } = results._rawResults[0]
+
+      const count = genders.reduce((count, gender) => {
+        const facet = facets[`${attribute}.${gender}`]
+        if (!facet) return count
+        return count += Object.values(facet).reduce((sum, value) => sum += value, 0)
+      }, 0)
+
+      return { count }
+    },
   }
 }
+
+export default cloathingToggle
