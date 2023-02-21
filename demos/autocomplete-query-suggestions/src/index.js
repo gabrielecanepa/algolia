@@ -5,7 +5,7 @@ import autocomplete from 'autocomplete.js'
 const APP_ID = '0UI9MOXMX5'
 const PUBLIC_API_KEY = '1d30c6a6ea8a7dfcc9797671c39723db'
 const PRODUCTS_INDEX = 'fendi.it.en'
-const QUERY_SUGGESTIONS_INDEX = 'fendi.it.en_qs'
+const QUERY_SUGGESTIONS_INDEX = 'fendi.it.en_query_suggestions'
 
 // Initialize client and indices
 const searchClient = algoliasearch(APP_ID, PUBLIC_API_KEY)
