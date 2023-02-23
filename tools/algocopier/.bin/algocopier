@@ -1,8 +1,12 @@
 #!/bin/bash
 
-if [[ "$1" = "config" ]]; then
-  $EDITOR ./config.yml
+_algocopier_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd -P)/.."
+
+if [[ $1 = "config" ]]; then
+  $EDITOR "$_algocopier_path/config.yml"
   exit 0
 fi
 
-ruby ./lib/main.rb
+ruby "$_algocopier_path/lib/main.rb" "$@"
+
+unset _algocopier_path
