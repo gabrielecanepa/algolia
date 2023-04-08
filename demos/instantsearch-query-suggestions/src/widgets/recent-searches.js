@@ -1,7 +1,9 @@
+// Custom widget - see https://algolia.com/doc/guides/building-search-ui/widgets/create-your-own-widgets/js
+
 const DEFAULT_WIDGET_PARAMS = {
-  widgetName: 'ais.recent-searches',
+  widgetName: 'ais.recentSearches',
   header: 'Your searches',
-  hitsPerPage: 3,
+  nbHits: 3,
   minResults: 1,
 }
 
@@ -9,28 +11,18 @@ const widgetStore = {
   isFirstRender: true,
 }
 
-// See https://algolia.com/doc/guides/building-search-ui/widgets/create-your-own-widgets/js
-const connectRecentSearches = (renderFn, disposeFn) => ({
+const connectRecentSearches = (renderFnFn, disposeFnFn) => ({
   $$type: widgetStore.widgetName,
   init(initOptions) {
-    renderFn(this.getWidgetRenderState(initOptions), true)
+    renderFnFn(this.getWidgetRenderFnState(initOptions), true)
   },
-  render(renderOptions) {
-    renderFn(this.getWidgetRenderState(renderOptions), false)
+  renderFn(renderFnOptions) {
+    renderFnFn(this.getWidgetRenderFnState(renderFnOptions), false)
   },
-  dispose() {
-    disposeFn()
+  disposeFn() {
+    disposeFnFn()
   },
-  getWidgetUiState(uiState) {
-    return uiState
-  },
-  getWidgetSearchParameters(searchParameters) {
-    return searchParameters
-  },
-  getRenderState(renderState) {
-    return renderState
-  },
-  getWidgetRenderState({ results }) {
+  getWidgetRenderFnState({ results }) {
     return results
   },
 })
@@ -43,8 +35,8 @@ export const getRecentSearches = () => {
 
     const items = localStorageItem.split(',')
 
-    if (items.length > widgetStore.hitsPerPage) {
-      const recentSearches = items.slice(0, widgetStore.hitsPerPage)
+    if (items.length > widgetStore.nbHits) {
+      const recentSearches = items.slice(0, widgetStore.nbHits)
       localStorage.setItem(widgetStore.widgetName, recentSearches)
       return recentSearches
     }
@@ -57,8 +49,6 @@ export const getRecentSearches = () => {
 }
 
 export const addRecentSearch = query => {
-  // TODO: normalize/reject the query.
-
   const recentSearches = getRecentSearches()
 
   if (recentSearches.length > 0) {
@@ -66,15 +56,15 @@ export const addRecentSearch = query => {
     if (recentSearches.includes(query)) {
       recentSearches.splice(recentSearches.indexOf(query), 1)
     }
-    // Remove last item if hitsPerPage is reached.
-    if (recentSearches.length > widgetStore.hitsPerPage) {
+    // Remove last item if nbHits is reached.
+    if (recentSearches.length > widgetStore.nbHits) {
       recentSearches.pop()
     }
   }
 
   // Add query to first position.
   recentSearches.unshift(query)
-  const stringifiedSearches = recentSearches.slice(0, widgetStore.hitsPerPage).join(',')
+  const stringifiedSearches = recentSearches.slice(0, widgetStore.nbHits).join(',')
   localStorage.setItem(widgetStore.widgetName, stringifiedSearches)
 }
 
@@ -83,18 +73,24 @@ export const recentSearches = widgetParams => {
     container,
     widgetName = DEFAULT_WIDGET_PARAMS.widgetName,
     header = DEFAULT_WIDGET_PARAMS.header,
-    hitsPerPage = DEFAULT_WIDGET_PARAMS.hitsPerPage,
+    nbHits = DEFAULT_WIDGET_PARAMS.nbHits,
     minResults = DEFAULT_WIDGET_PARAMS.minResults,
+    visible = true,
   } = widgetParams
+
+  if (!visible) {
+    disposeFn()
+    return
+  }
 
   // Store and use in localStorage functions.
   widgetStore.widgetName = widgetName
-  widgetStore.hitsPerPage = hitsPerPage
+  widgetStore.nbHits = nbHits
   widgetStore.minResults = minResults
 
   const containerNode = typeof container === 'string' ? document.querySelector(container) : container
 
-  const render = results => {
+  const renderFn = results => {
     if (!widgetStore.isFirstRender || !results) return
 
     if (results.query && results.nbHits >= minResults) {
@@ -104,19 +100,19 @@ export const recentSearches = widgetParams => {
     widgetStore.isFirstRender = false
   }
 
-  const dispose = () => {
+  const disposeFn = () => {
     containerNode.innerHTML = ''
   }
 
   const widget = {
     $$widgetType: widgetName,
-    ...connectRecentSearches(render, dispose),
+    ...connectRecentSearches(renderFn, disposeFn),
   }
 
   const recentSearches = getRecentSearches()
 
   if (recentSearches.length === 0) {
-    dispose()
+    disposeFn()
     return widget
   }
 

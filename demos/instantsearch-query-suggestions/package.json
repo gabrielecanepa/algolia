@@ -2,25 +2,6 @@
   "name": "instantsearch-query-suggestions",
   "version": "0.0.1",
   "description": "Display query suggestions and products using Algolia InstantSearch.js ⚡️",
-  "license": "MIT",
-  "main": "index.html",
-  "scripts": {
-    "dev": "parcel index.html --open",
-    "start": "parcel index.html",
-    "build": "parcel build index.html"
-  },
-  "dependencies": {
-    "algoliasearch": "4.14.2",
-    "instantsearch.js": "4.49.0",
-    "parcel-bundler": "^1.6.1"
-  },
-  "devDependencies": {
-    "@babel/core": "7.2.0",
-    "typescript": "4.4.4"
-  },
-  "resolutions": {
-    "@babel/preset-env": "7.13.8"
-  },
   "keywords": [
     "algolia",
     "search",
@@ -28,5 +9,19 @@
     "instantsearch.js",
     "query suggestions",
     "suggestions"
-  ]
+  ],
+  "license": "MIT",
+  "scripts": {
+    "dev": "parcel index.html --open",
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "dependencies": {
+    "algoliasearch": "^4.17.0",
+    "instantsearch.js": "^4.54.0"
+  },
+  "devDependencies": {
+    "parcel": "^2.8.3",
+    "typescript": "^5.0.3"
+  }
 }

@@ -2,12 +2,15 @@ import { connectSearchBox } from 'instantsearch.js/es/connectors'
 
 import { addRecentSearch } from './recent-searches'
 
-export const searchBox = connectSearchBox((renderOptions, isFirstRender) => {
+let widgetContainer
+
+const renderFn = (renderOptions, isFirstRender) => {
   const { clear, refine, widgetParams } = renderOptions
-  const { container, placeholder = 'Search for', initialQuery  } = widgetParams
+  const { container, placeholder = 'Search for', initialQuery = '' } = widgetParams
+  widgetContainer = container
 
   if (isFirstRender) {
-    container.innerHTML = `
+    widgetContainer.innerHTML = `
       <div class="ais-SearchBox">
         <input
           class="ais-SearchBox-input"
@@ -24,11 +27,11 @@ export const searchBox = connectSearchBox((renderOptions, isFirstRender) => {
       </form>
     `
 
-    const input = container.querySelector('.ais-SearchBox-input')
-    const hint = container.querySelector('.ais-SearchBox-hint')
-    const reset = container.querySelector('.ais-SearchBox-reset')
+    const input = widgetContainer.querySelector('.ais-SearchBox-input')
+    const hint = widgetContainer.querySelector('.ais-SearchBox-hint')
+    const reset = widgetContainer.querySelector('.ais-SearchBox-reset')
 
-    // Only show hint on focus
+    // Show hint only on focus
     hint.style.display = 'none'
 
     input.addEventListener('focus', () => {
@@ -47,8 +50,6 @@ export const searchBox = connectSearchBox((renderOptions, isFirstRender) => {
     })
 
     input.addEventListener('keydown', event => {
-      if (!['Enter', 'Tab'].includes(event.key)) return
-
       const query = event.target.value.trim()
 
       switch (event.key) {
@@ -56,7 +57,8 @@ export const searchBox = connectSearchBox((renderOptions, isFirstRender) => {
           if (!query || query === initialQuery) return
           addRecentSearch(query)
           window.location.href = `/search?q=${query}`
-          return
+          break
+        case 'ArrowRight':
         case 'Tab':
           if (hint.placeholder.length > query.length) {
             event.preventDefault()
@@ -72,4 +74,10 @@ export const searchBox = connectSearchBox((renderOptions, isFirstRender) => {
       input.focus()
     })
   }
-})
+}
+
+const disposeFn = () => {
+  widgetContainer.innerHTML = ''
+}
+
+export const searchBox = connectSearchBox(renderFn, disposeFn)

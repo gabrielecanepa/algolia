@@ -8,21 +8,20 @@ const DEFAULT_WIDGET_PARAMS = {
   hitsPerPage: 3,
 }
 
-export const querySuggestions = connectHits(renderOptions => {
+let widgetContainer
+
+const renderFn = renderOptions => {
   const {
     hits,
     results,
-    widgetParams: {
-      container,
-      searchBoxContainer,
-      header = DEFAULT_WIDGET_PARAMS.header,
-      hitsPerPage = DEFAULT_WIDGET_PARAMS.hitsPerPage,
-    },
+    widgetParams: { container, searchBoxContainer, header = DEFAULT_WIDGET_PARAMS.header, hitsPerPage = DEFAULT_WIDGET_PARAMS.hitsPerPage },
   } = renderOptions
 
-  if (!results || hits.length === 0) return
+  if (!results || hits.length < 2) return
 
-  container.innerHTML = `
+  widgetContainer = container
+
+  widgetContainer.innerHTML = `
     <div class="ais-QuerySuggestions">
       <h3 class="ais-Header">${header}</h3>
       <div class="ais-Hits">
@@ -37,7 +36,7 @@ export const querySuggestions = connectHits(renderOptions => {
   hintElement.placeholder = hint || ''
 
   // Build suggestions
-  const listElement = container.querySelector('.ais-Hits-list')
+  const listElement = widgetContainer.querySelector('.ais-Hits-list')
   const suggestionHits = hint ? hits.filter(hit => hit.query !== hint) : hits.slice(0, hitsPerPage)
 
   for (const hit of suggestionHits) {
@@ -58,4 +57,10 @@ export const querySuggestions = connectHits(renderOptions => {
     listItem.appendChild(link)
     listElement.appendChild(listItem)
   }
-})
+}
+
+const disposeFn = () => {
+  widgetContainer.innerHTML = ''
+}
+
+export const querySuggestions = connectHits(renderFn, disposeFn)

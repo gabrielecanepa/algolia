@@ -16,24 +16,25 @@ const productCard = hit => {
   `
 }
 
-export const products = connectHits((renderOptions, isFirstRender) => {
-  const {
-    hits,
-    widgetParams: { container },
-  } = renderOptions
+let widgetContainer
+
+const renderFn = (renderOptions, isFirstRender) => {
+  const { hits, widgetParams } = renderOptions
+  widgetContainer = widgetParams.container
 
   if (isFirstRender) return
 
   if (hits.length === 0) {
-    container.innerHTML = `
-      <div class="ais-Hits--empty">
+    widgetContainer.innerHTML = `
+      <div class="ais-Hits ais-Hits--empty">
         <p>No results</p>
       </div>
     `
     return
   }
 
-  container.innerHTML = `
+  // prettier-ignore
+  widgetContainer.innerHTML = `
     <div class="ais-Hits">
       <ul class="ais-Hits-list">
         ${hits.map(hit => `
@@ -44,4 +45,10 @@ export const products = connectHits((renderOptions, isFirstRender) => {
       </ul>
     </div>
   `
-})
+}
+
+const disposeFn = () => {
+  widgetContainer.innerHTML = ''
+}
+
+export const products = connectHits(renderFn, disposeFn)

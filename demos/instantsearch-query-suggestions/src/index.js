@@ -2,7 +2,7 @@ import algoliasearch from 'algoliasearch'
 import instantsearch from 'instantsearch.js'
 import { configure, index } from 'instantsearch.js/es/widgets'
 
-import { products, querySuggestions, recentSearches, searchBox } from './widgets'
+import { products, querySuggestions, recentSearches, searchBanner, searchBox } from './widgets'
 
 // Environment
 const APP_ID = '0UI9MOXMX5'
@@ -17,117 +17,108 @@ const querySuggestionsContainer = document.querySelector('#query-suggestions')
 const bannerContainer = document.querySelector('#search-banner')
 const productsContainer = document.querySelector('#products')
 
-// Search
-const searchConfig = {
-  products: {
-    indexName: PRODUCTS_INDEX,
-    params: {
-      hitsPerPage: 12,
-    },
-  },
-  querySuggestions: {
-    indexName: QUERY_SUGGESTIONS_INDEX,
-    params: {
-      hitsPerPage: 3,
-    },
-  },
-  recentSearches: {
-    params: {
-      hitsPerPage: 2,
-    },
-  },
-}
-
-const searchState = {
-  initialRequest: true,
-  initialQuery: '',
-}
-
-const searchClient = algoliasearch(APP_ID, SEARCH_API_KEY)
+// Routing
+const { search: searchLocation } = window.location
+const { q } = Object.fromEntries(new URLSearchParams(searchLocation).entries())
+const initialQuery = q?.trim() || ''
 
 // Search
-const searchFunction = async helper => {
-  let query = helper.state.query.trim()
 
-  // Routing rendering for /search page
-  switch (searchState.initialRequest) {
-    case true: {
-      query = searchState.initialQuery
-      searchState.initialRequest = false
-      if (query) {
-        bannerContainer.innerHTML = `<h1>${query}</h1>`
-        querySuggestionsContainer.style.display = 'none'
-        recentSearchesContainer.style.display = 'none'
-        break
-      }
-      bannerContainer.innerHTML = query ? '' : '<h2>You might also like</h2>'
-    }
-    case false: {
-      bannerContainer.innerHTML = query ? '' : '<h2>You might also like</h2>'
-      querySuggestionsContainer.style.display = ''
-      recentSearchesContainer.style.display = query ? 'none' : ''
-    }
-  }
+// Check current page
+const { pathname } = window.location
+const isSRP = pathname === '/search'
 
-  // Add filter to avoid fetching the same exact query. NB: `query` must be a facet.
-  const filters = query ? `NOT query:'${query}'` : ''
-  helper.setQuery(query).setQueryParameter('filters', filters).search()
+// The initial index must be query suggestions on standard pages and products on SRP
+const indexName = isSRP ? '<PRODUCTS_INDEX>' : '<QUERY_SUGGESTIONS_INDEX>'
+
+// Store the initial request
+let isInitialRequest = true
+
+// Empty results to be returned with the initial request
+const emptyResult = {
+  hits: [],
+  nbHits: 0,
+  nbPages: 0,
+  page: 0,
+  processingTimeMS: 0,
+  hitsPerPage: 0,
+  exhaustiveNbHits: false,
+  query: '',
+  params: '',
 }
 
-const search = instantsearch({
-  indexName: PRODUCTS_INDEX,
-  searchClient,
-  searchFunction,
-})
+// Base client
+const algoliaClient = algoliasearch(APP_ID, SEARCH_API_KEY)
 
-const runApp = () => {
-  const { pathname } = window.location
+// Extended client
+const searchClient = {
+  async search(requests) {
+    // 1. Initial request (one index only)
+    if (isInitialRequest) {
+      isInitialRequest = false
 
-  if (!['/', '/search'].includes(pathname)) {
-    return (document.body.innerHTML = '<code>404 - Not found</code>')
+      // 1.1 Filter requests by current index
+      const filteredRequests = requests.filter(request => request.indexName === indexName)
+
+      // 1.2 Only fetch results for the current index
+      const { results } = await algoliaClient.search(filteredRequests)
+
+      // 1.3 Return results for the current index + empty results for the additional index
+      return { results: [emptyResult, ...results] }
+    }
+
+    // 2. Subsequent requests (both indices)
+    return await algoliaClient.search(requests)
+  },
+}
+
+// Initialization
+
+const initialize = () => {
+  if (!['/search', '/'].includes(pathname)) {
+    document.body.innerHTML = '<code>404 - Not found</code>'
+    return
   }
 
-  if (pathname === '/search') {
-    const urlSearchParams = new URLSearchParams(window.location.search)
-    const { q } = Object.fromEntries(urlSearchParams.entries())
-    searchState.initialQuery = q || ''
-  }
+  const search = instantsearch({
+    indexName,
+    searchClient,
+  })
 
   search.addWidgets([
     searchBox({
       container: searchBoxContainer,
       placeholder: 'Search for',
-      initialQuery: searchState.initialQuery,
+      initialQuery,
     }),
-    recentSearches({
-      container: recentSearchesContainer,
-      ...searchConfig.recentSearches.params,
+    configure({
+      hitsPerPage: 12,
     }),
-    // Products
+    products({
+      container: productsContainer,
+    }),
     index({
-      indexName: searchConfig.products.indexName,
-    }).addWidgets([
-      configure(searchConfig.products.params),
-      products({
-        container: productsContainer,
-      }),
-    ]),
-    // Query suggestions
-    index({
-      indexName: searchConfig.querySuggestions.indexName,
+      indexName: QUERY_SUGGESTIONS_INDEX,
     }).addWidgets([
       configure({
-        ...searchConfig.querySuggestions.params,
-        hitsPerPage: searchConfig.querySuggestions.params.hitsPerPage + 1, // include hint
+        hitsPerPage: 4, // 3 + 1 for the hint
       }),
       querySuggestions({
         container: querySuggestionsContainer,
         searchBoxContainer,
       }),
     ]),
+    recentSearches({
+      container: recentSearchesContainer,
+      nbHits: 2,
+    }),
+    searchBanner({
+      container: bannerContainer,
+      query: initialQuery,
+    }),
   ])
 
   search.start()
 }
 
-runApp()
+initialize()
