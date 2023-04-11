@@ -61,6 +61,7 @@ const searchFunction = async helper => {
         break
       }
       bannerContainer.innerHTML = query ? '' : '<h2>You might also like</h2>'
+      break
     }
     case false: {
       bannerContainer.innerHTML = query ? '' : '<h2>You might also like</h2>'

@@ -4,7 +4,7 @@ import { addRecentSearch } from './recent-searches'
 
 export const searchBox = connectSearchBox((renderOptions, isFirstRender) => {
   const { clear, refine, widgetParams } = renderOptions
-  const { container, placeholder = 'Search for', initialQuery  } = widgetParams
+  const { container, placeholder = 'Search for', initialQuery } = widgetParams
 
   if (isFirstRender) {
     container.innerHTML = `
@@ -47,22 +47,24 @@ export const searchBox = connectSearchBox((renderOptions, isFirstRender) => {
     })
 
     input.addEventListener('keydown', event => {
-      if (!['Enter', 'Tab'].includes(event.key)) return
-
       const query = event.target.value.trim()
 
       switch (event.key) {
-        case 'Enter':
-          if (!query || query === initialQuery) return
-          addRecentSearch(query)
-          window.location.href = `/search?q=${query}`
-          return
+        case 'ArrowRight':
         case 'Tab':
           if (hint.placeholder.length > query.length) {
             event.preventDefault()
             input.value = hint.placeholder
             refine(input.value)
           }
+          return
+        case 'Enter':
+          if (!query || query === initialQuery) return
+          addRecentSearch(query)
+          window.location.href = `/search?q=${query}`
+          return
+        default:
+          return
       }
     })
 

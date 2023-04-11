@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "Display query suggestions and products using Algolia InstantSearch.js ⚡️",
   "license": "MIT",
-  "main": "index.html",
   "scripts": {
     "dev": "parcel index.html --open",
     "start": "parcel index.html",
