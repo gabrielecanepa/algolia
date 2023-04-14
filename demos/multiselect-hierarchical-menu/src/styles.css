@@ -1,0 +1,45 @@
+body {
+  font-family: sans-serif;
+}
+
+main {
+  display: flex;
+}
+
+main .ais-MultiselectHierarchicalMenu {
+  width: 20rem;
+  margin-right: 1rem;
+}
+
+main .ais-Hits-list {
+  display: grid;
+  grid-template: 1fr / 1fr 1fr 1fr;
+}
+
+@media (max-width: 900px) {
+  main .ais-Hits-list {
+    grid-template: 1fr / 1fr;
+  }
+}
+
+/* Widget */
+
+.ais-MultiselectHierarchicalMenu-list {
+  list-style: none;
+}
+
+.ais-MultiselectHierarchicalMenu-toggle {
+  display: inline-block;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 1.2rem;
+}
+
+.ais-MultiselectHierarchicalMenu-label {
+  cursor: pointer;
+}
+
+.ais-MultiselectHierarchicalMenu-label--active {
+  font-weight: 600;
+}
