@@ -11,15 +11,30 @@ main .ais-MultiselectHierarchicalMenu {
   margin-right: 1rem;
 }
 
+main .ais-Hits {
+  flex-grow: 1;
+}
+
 main .ais-Hits-list {
   display: grid;
   grid-template: 1fr / 1fr 1fr 1fr;
 }
 
+main .ais-Hits-item {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+
 @media (max-width: 900px) {
   main .ais-Hits-list {
     grid-template: 1fr / 1fr;
   }
+}
+
+li {
+  list-style-type: none;
 }
 
 /* Widget */

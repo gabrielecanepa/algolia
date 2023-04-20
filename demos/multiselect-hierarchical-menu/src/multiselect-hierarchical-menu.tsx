@@ -17,18 +17,23 @@ type MultiselectHierarchicalMenuLevel = {
   refine: (value: string) => void
 }
 
+type MultiselectHierarchicalMenuRender = {
+  levels: MultiselectHierarchicalMenuLevel[]
+}
+
 type MultiselectHierarchicalMenuState = {
   levels: MultiselectHierarchicalMenuLevel[]
+  refinements: string[]
 }
 
 type MultiselectHierarchicalMenuWidget = {
   $$type: string
-  renderState: MultiselectHierarchicalMenuState
+  renderState: MultiselectHierarchicalMenuRender
   indexRenderState: {
-    multiselectHierarchicalMenu: MultiselectHierarchicalMenuState
+    multiselectHierarchicalMenu: MultiselectHierarchicalMenuRender
   }
   indexUiState: {
-    multiselectHierarchicalMenu: MultiselectHierarchicalMenuState
+    multiselectHierarchicalMenu: MultiselectHierarchicalMenuRender
   }
 }
 
@@ -48,32 +53,38 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
     // Store information that needs to be shared across multiple method calls.
     const connectorState: MultiselectHierarchicalMenuState = {
       levels: [],
+      refinements: [],
     }
 
     return {
       $$type: 'ais.multiselectHierarchicalMenu',
       getWidgetRenderState({ helper, results }) {
+        // When there are no results, return the API with default values.
+        if (!results) {
+          return { levels: [], widgetParams }
+        }
+
+        // Get the last refinement.
+        const newRefinement = results.getRefinements().pop()?.attributeName
+
         // Merge the results items with the initial ones.
         const getItems = (attribute: string): MultiselectHierarchicalMenuItem[] => {
-          const levelsItems = connectorState.levels.find(level => level.attribute === attribute).items
-
-          const facetValues = results.getFacetValues(attribute, {}) as SearchResults.FacetValue[]
+          const facetValues = results.getFacetValues(attribute, { sortBy: ['name:asc'] }) as SearchResults.FacetValue[]
           const resultsItems = facetValues.map(facetValue => ({ ...facetValue, label: facetValue.name.split(separator).pop() }))
 
-          if (!levelsItems.length && resultsItems.length) return resultsItems
-          if (!resultsItems.length) return levelsItems
+          if (newRefinement && !attributes.includes(newRefinement)) return resultsItems
 
-          const mergedItems = levelsItems.map(levelItem => {
+          const levelItems = connectorState.levels.find(level => level.attribute === attribute).items
+
+          if (!levelItems.length && resultsItems.length) return resultsItems
+          if (!resultsItems.length) return levelItems
+
+          const mergedItems = levelItems.map(levelItem => {
             const resultsItem = resultsItems.find(resultItem => resultItem.name === levelItem.name)
             return resultsItem ? { ...levelItem, ...resultsItem } : levelItem
           })
 
           return mergedItems.sort((a, b) => a.name.localeCompare(b.name))
-        }
-
-        // When there are no results, return the API with default values.
-        if (!results) {
-          return { levels: [], widgetParams }
         }
 
         // Register refinements and items for each attribute.

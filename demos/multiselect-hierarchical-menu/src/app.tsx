@@ -1,5 +1,5 @@
 import algoliasearch from 'algoliasearch/lite'
-import { InstantSearch, Hits, Configure } from 'react-instantsearch-hooks-web'
+import { Configure, Hits, InstantSearch, RefinementList } from 'react-instantsearch-hooks-web'
 import { MultiselectHierarchicalMenu } from './multiselect-hierarchical-menu'
 import './styles.css'
 
@@ -27,6 +27,7 @@ const App = () => (
       <Configure disjunctiveFacets={['hierarchicalCategories.lvl0', 'hierarchicalCategories.lvl1']} maxValuesPerFacet={1000} />
       <main>
         <MultiselectHierarchicalMenu attributes={attributes} />
+        <RefinementList attribute="brand" />
         <Hits hitComponent={Hit} />
       </main>
 		</InstantSearch>
