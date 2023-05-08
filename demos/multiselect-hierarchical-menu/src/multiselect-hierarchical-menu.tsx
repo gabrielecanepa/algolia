@@ -5,7 +5,7 @@ import type { Connector } from 'instantsearch.js'
 import type { AdditionalWidgetProperties } from 'react-instantsearch-hooks-web'
 import { useCallback, useMemo, useState } from 'react'
 
-import { cx } from './utils'
+const cx = (...classNames: string[]): string => classNames.filter(Boolean).join(' ')
 
 // Types
 
@@ -60,19 +60,17 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
       $$type: 'ais.multiselectHierarchicalMenu',
       getWidgetRenderState({ helper, results }) {
         // When there are no results, return the API with default values.
-        if (!results) {
-          return { levels: [], widgetParams }
-        }
+        if (!results) return { levels: [], widgetParams }
 
         // Get the last refinement.
-        const newRefinement = results.getRefinements().pop()?.attributeName
+        const lastRefinement = results.getRefinements().pop()?.attributeName
 
         // Merge the results items with the initial ones.
         const getItems = (attribute: string): MultiselectHierarchicalMenuItem[] => {
           const facetValues = results.getFacetValues(attribute, { sortBy: ['name:asc'] }) as SearchResults.FacetValue[]
           const resultsItems = facetValues.map(facetValue => ({ ...facetValue, label: facetValue.name.split(separator).pop() }))
 
-          if (newRefinement && !attributes.includes(newRefinement)) return resultsItems
+          if (lastRefinement && !attributes.includes(lastRefinement)) return resultsItems
 
           const levelItems = connectorState.levels.find(level => level.attribute === attribute).items
 
@@ -91,11 +89,9 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
         for (const [i, attribute] of attributes.entries()) {
           if (!connectorState.levels[i]) {
             const refine = value => {
-              for (const a of attributes) {
-                const isLastAttribute = attribute === attributes[ attributes.length - 1 ] && attribute === a
-                if (!isLastAttribute && helper.getRefinements(a).length > 0) {
-                  helper.clearRefinements(a)
-                }
+              for (const attr of attributes) {
+                const isLastAttribute = attribute === attributes[attributes.length - 1] && attribute === attr
+                if (!isLastAttribute && helper.getRefinements(attr).length > 0) helper.clearRefinements(attr)
               }
               const refinement = helper.getRefinements(attribute).find(ref => ref.value === value)
               refinement ? helper.removeDisjunctiveFacetRefinement(attribute, value) : helper.addDisjunctiveFacetRefinement(attribute, value)
@@ -136,17 +132,34 @@ export const connectMultiselectHierarchicalMenu: MultiselectHierarchicalMenuConn
         unmountFn()
       },
       getWidgetUiState(uiState, { searchParameters }) {
+        const state = attributes.reduce((levelState, attribute) => ({
+          ...levelState,
+          [attribute]: searchParameters.getDisjunctiveRefinements(attribute),
+        }), {})
+
         return {
           ...uiState,
           multiselectHierarchicalMenu: {
             ...uiState.multiselectHierarchicalMenu,
-            ...attributes.map(attribute => ({
-              [attribute]: searchParameters.getDisjunctiveRefinements(attribute),
-            })),
+            ...state,
           },
         }
       },
-      getWidgetSearchParameters(searchParameters) {
+      getWidgetSearchParameters(searchParameters, { uiState }) {
+        // Apply the refinements from the URL parameters.
+        for (const attribute of attributes) {
+          const values = uiState.multiselectHierarchicalMenu?.[attribute]
+
+          if (Array.isArray(values)) {
+            const refinements = searchParameters.disjunctiveFacetsRefinements[attribute] || []
+
+            searchParameters.disjunctiveFacetsRefinements = {
+              ...searchParameters.disjunctiveFacetsRefinements,
+              [attribute]: [...refinements, ...values],
+            }
+          }
+        }
+
         return searchParameters
       },
     }
@@ -171,10 +184,6 @@ type MultiselectHierarchicalMenuElementProps = {
 }
 
 const MultiselectHierarchicalMenuItem = ({ levels, index, item }: MultiselectHierarchicalMenuElementProps): JSX.Element => {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-
-  const { refine }: MultiselectHierarchicalMenuLevel = useMemo(() => levels[ index ], [levels, index])
-
   const subLevelItems = useMemo(() => {
     const subLevel = levels[index + 1]
     if (!subLevel) return []
@@ -184,6 +193,10 @@ const MultiselectHierarchicalMenuItem = ({ levels, index, item }: MultiselectHie
   const hasSubLevel: boolean = useMemo(() => subLevelItems.length > 0, [levels, index])
 
   const isSubLevelRefined: boolean = useMemo(() => subLevelItems.some(subItem => subItem.isRefined), [levels, index])
+
+  const [isOpen, setIsOpen] = useState<boolean>(item.isRefined || isSubLevelRefined)
+
+  const { refine }: MultiselectHierarchicalMenuLevel = useMemo(() => levels[index], [levels, index])
 
   const onButtonClick = useCallback(() => {
     setIsOpen(!isOpen)
