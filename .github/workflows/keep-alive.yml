@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: gautamkrishnar/keepalive-workflow@v1
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
@@ -29,4 +30,4 @@ jobs:
         env:
           ALGOLIA_APP_IDS: ${{ secrets.ALGOLIA_APP_IDS }}
           ALGOLIA_API_KEYS: ${{ secrets.ALGOLIA_API_KEYS }}
-          ALGOLIA_KEEPALIVE_INDEX_NAME: ${{ secrets.ALGOLIA_KEEPALIVE_INDEX_NAME }}
+          ALGOLIA_KEEPALIVE_INDEX: ${{ secrets.ALGOLIA_KEEPALIVE_INDEX }}
