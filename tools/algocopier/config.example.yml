@@ -1,10 +1,20 @@
+################ Applications ################
+
+apps:
+  <app1>:
+    appId: <APP1_ID>
+    apiKey: <APP1_ADMIN_KEY>
+  <app2>:
+    appId: <APP2_ID>
+    apiKey: <APP2_ADMIN_KEY>
+  # ...
+
 ################## Settings ##################
 
 source_app: app1
 source_index: app1_index_name
 target_app: app2
 target_index: app2_index_name
-
 clear_index: true
 hits: true
 params:
@@ -16,14 +26,3 @@ synonyms: true
 rules: true
 rules_check: false
 file: null
-
-################ Applications ################
-
-apps:
-  app1:
-    appId: <APP1_ID>
-    apiKey: <APP1_ADMIN_KEY>
-  app2:
-    appId: <APP2_ID>
-    apiKey: <APP2_ADMIN_KEY>
-  # ...

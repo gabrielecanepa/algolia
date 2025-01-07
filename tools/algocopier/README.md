@@ -4,7 +4,7 @@ Algocopier is a tool to copy indices (data and settings) from one index to anoth
 
 ## Usage
 
-1. If not already installed, install Ruby 3.1.0:
+1. If not already installed, install Ruby 3.1.0 with your preferred version manager:
 
 ```sh
 rbenv install 3.1.0
@@ -15,7 +15,7 @@ rvm install 3.1.0
 2. Install the Ruby dependencies with Bundler:
 
 ```sh
-gem install bundler # if not already installed
+gem install bundler
 bundle install
 ```
 
