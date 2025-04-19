@@ -7,7 +7,7 @@ const APP_IDS = process.env.ALGOLIA_APP_IDS.split(',')
 const API_KEYS = process.env.ALGOLIA_API_KEYS.split(',')
 const KEEPALIVE_INDEX = process.env.ALGOLIA_KEEPALIVE_INDEX || '_keepalive'
 
-const run = async () => {
+;(async () => {
   for (const appId of APP_IDS) {
     try {
       // Init the client and keepalive index.
@@ -33,6 +33,4 @@ const run = async () => {
       throw new Error(e.message)
     }
   }
-}
-
-run()
+})()
